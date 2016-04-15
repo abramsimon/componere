@@ -1,0 +1,133 @@
+android:
+    level: application
+    type: apk
+    team: demand
+    area: demand
+    description: The android application that contributors use.
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - investigo-android
+        - api
+
+investigo-android:
+    level: library
+    type: jar
+    team: opensource
+    area: 3rd-party
+    description: Logging API and Wrappers for Android.
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+kuasa:
+    level: application
+    type: war
+    team: supply
+    area: supply
+    description: Surveys and campaigns and QC
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+lumina:
+    level: application
+    type: war
+    team: demand
+    area: demand
+    description:
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+api:
+    level: application
+    type: war
+    team: supply
+    area: supply
+    description: API for the mobile products
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - ods
+        - ods-es
+ods:
+    level: foundation
+    type: postgresql
+    team: infra
+    area: supply
+    description: Online Data Store for incoming events
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+events:
+    level: application
+    type: war
+    team: supply
+    area: supply
+    description: Processes the online events and writes to ElastiSearch
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - ods
+        - ods-es
+        - pipeline-inbound
+
+ods-es:
+    level: foundation
+    type: war
+    team: supply
+    area: supply
+    description: ElastiSearch search/store for ODS events
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+pipeline-inbound:
+    level: foundation
+    type: s3
+    team: infra
+    area: pipeline
+    description: S3 events for the pipeline
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+pipeline:
+    level: application
+    type: war
+    team: infra
+    area: pipeline
+    description: Pipeline processing
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - pipeline-inbound
+        - pipeline-outbound
+
+pipeline-outbound:
+    level: foundation
+    type: s3
+    team: infra
+    area: pipeline
+    description: S3 events for post-pipeline
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+
+auto-qc:
+    level: application
+    type: war
+    team: optimization
+    area: platform
+    description: S3 events for the pipeline
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - pipeline-outbound
+        - app-backend
+
+app-backend:
+    level: application
+    type: war
+    team: infra
+    area: platform
+    description: S3 events for the pipeline
+    git: git@github.com:lolay/investigo-android.git
+    release-date: 2016-04-14
+    dependencies:
+        - ods

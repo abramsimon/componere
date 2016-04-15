@@ -1,0 +1,50 @@
+infra:
+    team-contact:
+        name: Infrastructure
+        email: infra@premise.com
+    lead-contact:
+        name: Dan Whitman
+        email: dan@premise.com
+    display:
+        background-color: "#218041"
+        foreground-color: "#ffffff"
+demand:
+    team-contact:
+        name: Demand
+        email: demand@premise.com
+    lead-contact:
+        name: Tom
+        email: tom@premise.com
+    display:
+        background-color: "#b4ca80"
+        foreground-color: "#000000"
+supply:
+    team-contact:
+        name: Supply
+        email: supply@premise.com
+    lead-contact:
+        name:
+        email:
+    display:
+        background-color: "#b4ca80"
+        foreground-color: "#000000"
+optimization:
+    team-contact:
+        name: Optimization
+        email: optimization@premise.com
+    lead-contact:
+        name:
+        email:
+    display:
+        background-color: "#117b8d"
+        foreground-color: "#ffffff"
+opensource:
+    team-contact:
+        name: Open Source
+        email:
+    lead-contact:
+        name: Gary Rudolph
+        email: gary@premise.com
+    display:
+        background-color: "#117b8d"
+        foreground-color: "#ffffff"

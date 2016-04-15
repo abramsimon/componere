@@ -1,0 +1,11 @@
+library:
+    order: 10
+    name: Library
+
+foundation:
+    order: 20
+    name: Foundation
+
+application:
+    order: 70
+    name: Application
