@@ -9,7 +9,7 @@ Configuration and diagram generation of the architecture diagrams. There are a f
     * Shows every component in an area
     * Shows components directly connected to/from a component in this area
     * Shows the area around connected components outside this area
-3.  Overview
+3.  Overview /wiki/overview.png
     * Shows every application component and above
     * Rolls up transitive dependencies for lower order dependencies
     * Groups by area
