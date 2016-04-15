@@ -1,5 +1,6 @@
-Configuration and diagram generation of the architecture diagrams.
-There are a few diagrams.
+Premise Componere
+=================
+Configuration and diagram generation of the architecture diagrams. There are a few diagrams that generated.
 1. BAD (Big Arse Diagram) /wiki/bad.png
   - Shows every component
   - Groups by area
