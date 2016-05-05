@@ -8,12 +8,12 @@ import yaml
 class Area:
 	identifier = None
 	name = None
-	parent_name = None
+	parent_identifier = None
 
 	def __init__(self, identifier, name=None, parent_identifier=None):
 		self.identifier = identifier
 		self.name = name
-		self.parent_identifier= parent_identifier
+		self.parent_identifier = parent_identifier
 
 	@classmethod
 	def from_area_dict(cls, identifer, dict):
