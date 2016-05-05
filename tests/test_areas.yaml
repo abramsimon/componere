@@ -1,0 +1,9 @@
+partial:
+  name: Partial
+
+partial-2:
+  parent_name: partial
+
+all:
+  name: All
+  parent_name: partial

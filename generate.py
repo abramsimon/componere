@@ -2,6 +2,49 @@
 
 import sys
 import os
+import yaml
+
+
+class Area:
+	identifier = None
+	name = None
+	parent_name = None
+
+	def __init__(self, identifier, name=None, parent_name=None):
+		self.identifier = identifier
+		self.name = name
+		self.parent_name = parent_name
+
+	@classmethod
+	def from_area_dict(cls, identifer, dict):
+		identifier = identifer
+		name = dict.get("name")
+		parent_name = dict.get("parent_name")
+		return Area(identifier, name, parent_name)
+
+	@classmethod
+	def from_areas_dict(cls, dict):
+		if dict is None:
+			return None
+
+		areas = {}
+		for identifier, area_dict in dict.iteritems():
+			area = Area.from_area_dict(identifier, area_dict)
+			areas[identifier] = area
+		return areas
+
+def _load_areas(file):
+	if not os.path.isfile(file):
+		raise Exception("File {0} is not found".format(file))
+
+	file = open(file)
+	areas_dict = yaml.safe_load(file)
+	file.close()
+
+	if areas_dict is None:
+		return None
+
+	return Area.from_areas_dict(areas_dict)
 
 
 def _print_usage():

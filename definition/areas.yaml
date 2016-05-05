@@ -2,15 +2,15 @@ premise:
     name: Premise
 demand:
     name: Demand
-    parent: premise
+    parent_name: premise
 supply:
     name: Supply
-    parent: premise
+    parent_name: premise
 platform:
     name: Platform
-    parent: premise
+    parent_name: premise
 pipeline:
     name: Pipeline
-    parent: platform
+    parent_name: platform
 3rd-party:
     name: 3rd Party

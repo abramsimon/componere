@@ -13,3 +13,17 @@ class GenerateTest(TestCase):
 
 		self.assertEqual(4, generate._main(["area"]))
 		self.assertEqual(4, generate._main(["area", "foo"]))
+
+	def test_areas_parsing(self):
+		areas = generate._load_areas("test_areas.yaml")
+		self.assertEqual(3, len(areas))
+
+		empty = areas["partial"]
+		self.assertNotEqual(None, empty)
+		self.assertEqual(u"Partial", empty.name)
+		self.assertEqual(None, empty.parent_name)
+
+		all = areas["all"]
+		self.assertNotEqual(None, all)
+		self.assertEqual(u"All", all.name)
+		self.assertEqual("partial", all.parent_name)
