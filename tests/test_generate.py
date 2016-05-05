@@ -21,9 +21,9 @@ class GenerateTest(TestCase):
 		empty = areas["partial"]
 		self.assertNotEqual(None, empty)
 		self.assertEqual(u"Partial", empty.name)
-		self.assertEqual(None, empty.parent_name)
+		self.assertEqual(None, empty.parent_identifier)
 
 		all = areas["all"]
 		self.assertNotEqual(None, all)
 		self.assertEqual(u"All", all.name)
-		self.assertEqual("partial", all.parent_name)
+		self.assertEqual("partial", all.parent_identifier)

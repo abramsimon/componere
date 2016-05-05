@@ -2,8 +2,8 @@ partial:
   name: Partial
 
 partial-2:
-  parent_name: partial
+  parent: partial
 
 all:
   name: All
-  parent_name: partial
+  parent: partial

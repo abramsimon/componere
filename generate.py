@@ -10,17 +10,17 @@ class Area:
 	name = None
 	parent_name = None
 
-	def __init__(self, identifier, name=None, parent_name=None):
+	def __init__(self, identifier, name=None, parent_identifier=None):
 		self.identifier = identifier
 		self.name = name
-		self.parent_name = parent_name
+		self.parent_identifier= parent_identifier
 
 	@classmethod
 	def from_area_dict(cls, identifer, dict):
 		identifier = identifer
 		name = dict.get("name")
-		parent_name = dict.get("parent_name")
-		return Area(identifier, name, parent_name)
+		parent_identifier = dict.get("parent")
+		return Area(identifier, name, parent_identifier)
 
 	@classmethod
 	def from_areas_dict(cls, dict):
