@@ -27,3 +27,13 @@ class GenerateTest(TestCase):
 		self.assertNotEqual(None, all)
 		self.assertEqual(u"All", all.name)
 		self.assertEqual("partial", all.parent_identifier)
+
+
+	def test_levels_parsing(self):
+		levels = generate._load_levels("test_levels.yaml")
+		self.assertEqual(2, len(levels))
+
+		level10 = levels["level-10"]
+		self.assertNotEqual(None, level10)
+		self.assertEqual(u"Level 10", level10.name)
+		self.assertEqual(10, level10.order)

@@ -33,6 +33,35 @@ class Area:
 			areas[identifier] = area
 		return areas
 
+
+class Level:
+	identifier = None
+	order = None
+	name = None
+
+	def __init__(self, identifier, order=None, name=None):
+		self.identifier = identifier
+		self.order = order
+		self.name = name
+
+	@classmethod
+	def from_values_dict(cls, identifier, values_dict):
+		order = values_dict.get("order")
+		name = values_dict.get("name")
+		return Level(identifier, order, name)
+
+	@classmethod
+	def from_collection_dict(cls, collection_dict):
+		if collection_dict is None:
+			return None
+
+		dict = {}
+		for identifier, values_dict in collection_dict.iteritems():
+			object = Level.from_values_dict(identifier, values_dict)
+			dict[identifier] = object
+		return dict
+
+
 def _load_areas(file):
 	if not os.path.isfile(file):
 		raise Exception("File {0} is not found".format(file))
@@ -45,6 +74,20 @@ def _load_areas(file):
 		return None
 
 	return Area.from_areas_dict(areas_dict)
+
+
+def _load_levels(file):
+	if not os.path.isfile(file):
+		raise Exception("File {0} is not found".format(file))
+
+	file = open(file)
+	dict = yaml.safe_load(file)
+	file.close()
+
+	if dict is None:
+		return None
+
+	return Level.from_collection_dict(dict)
 
 
 def _print_usage():
