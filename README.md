@@ -2,7 +2,7 @@ Premise Componere
 =================
 Configuration and diagram generation of the architecture diagrams. There are a few diagrams that generated.
 
-1.  BAD (Big Arse Diagram) /wiki/bad.png
+1.  Detail /wiki/detail.png
     * Shows every component
     * Groups by area
 2.  Area (For Each) /wiki/${area}/area.png
