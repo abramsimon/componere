@@ -16,22 +16,22 @@ class Area:
 		self.parent_identifier = parent_identifier
 
 	@classmethod
-	def from_area_dict(cls, identifer, dict):
+	def from_values_dict(cls, identifer, values_dict):
 		identifier = identifer
-		name = dict.get("name")
-		parent_identifier = dict.get("parent")
+		name = values_dict.get("name")
+		parent_identifier = values_dict.get("parent")
 		return Area(identifier, name, parent_identifier)
 
 	@classmethod
-	def from_areas_dict(cls, dict):
-		if dict is None:
+	def from_collection_dict(cls, collection_dict):
+		if collection_dict is None:
 			return None
 
-		areas = {}
-		for identifier, area_dict in dict.iteritems():
-			area = Area.from_area_dict(identifier, area_dict)
-			areas[identifier] = area
-		return areas
+		dict = {}
+		for identifier, values_dict in collection_dict.iteritems():
+			object = Area.from_values_dict(identifier, values_dict)
+			dict[identifier] = object
+		return dict
 
 
 class Level:
@@ -73,7 +73,7 @@ def _load_areas(file):
 	if areas_dict is None:
 		return None
 
-	return Area.from_areas_dict(areas_dict)
+	return Area.from_collection_dict(areas_dict)
 
 
 def _load_levels(file):
