@@ -21,9 +21,7 @@ def _print_usage():
 
 def _main(argv):
 	if len(argv) < 1:
-		_print_usage()
-		print "ERROR: No arguments given"
-		return 1
+		return _main(["all", "wiki"])
 
 	command = argv[0]
 

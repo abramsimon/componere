@@ -4,7 +4,6 @@ import generate
 
 class GenerateTest(TestCase):
 	def test_invalid_usage(self):
-		self.assertEqual(1, generate._main([]))
 		self.assertEqual(2, generate._main(["foo"]))
 		for command in ["detail", "overview", "areas", "all"]:
 			self.assertEqual(3, generate._main([command]))
