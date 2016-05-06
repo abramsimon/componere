@@ -16,8 +16,8 @@ class Area:
 		self.parent_identifier = parent_identifier
 
 	@classmethod
-	def from_values_dict(cls, identifer, values_dict):
-		identifier = identifer
+	def from_values_dict(cls, identifier, values_dict):
+		identifier = identifier
 		name = values_dict.get("name")
 		parent_identifier = values_dict.get("parent")
 		return Area(identifier, name, parent_identifier)
