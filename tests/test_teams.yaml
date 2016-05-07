@@ -1,0 +1,20 @@
+team-1:
+    name: Team 1 Contact
+    team-contact:
+        email: team-1@foo.com
+    lead-contact:
+        name: Lead Contact
+        email: lead-1@foo.com
+    display:
+        background-color: "#218041"
+        foreground-color: "#ffffff"
+team-2:
+    name: Team 2 Contact
+    team-contact:
+        email: team-2@foo.com
+    lead-contact:
+        name: Lead Contact
+        email: lead-2@foo.com
+    display:
+        background-color: "#b4ca80"
+        foreground-color: "#000000"

@@ -18,22 +18,38 @@ class GenerateTest(TestCase):
 		areas = generate._load_areas("test_areas.yaml")
 		self.assertEqual(3, len(areas))
 
-		empty = areas["partial"]
+		empty = areas.get("partial")
 		self.assertNotEqual(None, empty)
 		self.assertEqual(u"Partial", empty.name)
 		self.assertEqual(None, empty.parent_identifier)
 
-		all = areas["all"]
+		all = areas.get("all")
 		self.assertNotEqual(None, all)
 		self.assertEqual(u"All", all.name)
 		self.assertEqual("partial", all.parent_identifier)
-
 
 	def test_levels_parsing(self):
 		levels = generate._load_levels("test_levels.yaml")
 		self.assertEqual(2, len(levels))
 
-		level10 = levels["level-10"]
+		level10 = levels.get("level-10")
 		self.assertNotEqual(None, level10)
 		self.assertEqual(u"Level 10", level10.name)
 		self.assertEqual(10, level10.order)
+
+	def test_teams_parsing(self):
+		teams = generate._load_teams("test_teams.yaml")
+		self.assertEqual(2, len(teams))
+
+		team1 = teams.get("team-1")
+		self.assertNotEqual(None, team1)
+		self.assertEqual(u"Team 1 Contact", team1.name)
+		self.assertNotEqual(None, team1.team_contact)
+		self.assertEqual("team-1@foo.com", team1.team_contact.email)
+		self.assertEquals(None, team1.team_contact.name)
+		self.assertNotEqual(None, team1.lead_contact)
+		self.assertEquals(u"Lead Contact", team1.lead_contact.name)
+		self.assertEquals("lead-1@foo.com", team1.lead_contact.email)
+		self.assertNotEqual(None, team1.display)
+		self.assertEquals("#218041", team1.display.background_color)
+		self.assertEquals("#ffffff", team1.display.foreground_color)
