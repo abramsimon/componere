@@ -1,5 +1,6 @@
 from unittest import TestCase
 import generate
+import datetime
 
 
 class GenerateTest(TestCase):
@@ -53,3 +54,19 @@ class GenerateTest(TestCase):
 		self.assertNotEqual(None, team1.display)
 		self.assertEquals("#218041", team1.display.background_color)
 		self.assertEquals("#ffffff", team1.display.foreground_color)
+
+	def test_components_parsing(self):
+		components = generate._load_components("test_components.yaml")
+		self.assertEqual(2, len(components))
+
+		root = components.get("root")
+		self.assertNotEqual(None, root)
+		self.assertEqual(u"Root", root.name)
+		self.assertEqual("level-10", root.level_identifier)
+		self.assertEqual("apk", root.type)
+		self.assertEqual("team-1", root.team_identifier)
+		self.assertEqual("partial", root.area_identifier)
+		self.assertEqual(u"The Root Application", root.description)
+		self.assertEqual("git@github.com:lolay/investigo-android.git", root.git)
+		self.assertEqual(datetime.date(2016, 04, 14), root.release_date)
+		self.assertEqual(["dependency"], root.dependency_identifiers)
