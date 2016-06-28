@@ -3,7 +3,7 @@
 import sys
 import os
 import yaml
-import datetime
+from graphviz import Digraph
 
 class Area:
 	identifier = None
@@ -243,6 +243,58 @@ def _load_components(file):
 		return None
 
 	return Component.from_collection_dict(dict)
+
+
+def _find_child_areas(areas, parent_area_identifier):
+	found_areas = []
+	for area in areas:
+		if parent_area_identifier is None and area.parent_identifier is None:
+			found_areas.append(area)
+		elif area.parent_identifier == parent_area_identifier:
+			found_areas.append(area)
+	return found_areas
+
+
+def _find_area_components(components, area_identifier):
+	found_components = []
+	for component in components:
+		if area_identifier is None and component.area_identifier is None:
+			found_components.append(component)
+		elif component.area_identifier == area_identifier:
+			found_components.append(component)
+	return found_components
+
+
+def _add_detail_area_digraph(digraph, areas, area=None, depth=1):
+	if depth > 100:
+		raise Exception("Too many recursions")
+
+	parent_digraph = None
+	if digraph is not None:
+		parent_digraph = digraph
+	else:
+		parent_digraph = Digraph("area." + area.identifier)
+		parent_digraph.attributes("node", shape="square")
+
+	for child_area in _find_child_areas(areas, area.identifier):
+		parent_digraph.subgraph(_add_detail_area_digraph(areas, child_area, depth + 1))
+
+	return parent_digraph
+
+def _build_detail_digraph(name, output_file, areas_file, components_file, levels_file, teams_file):
+	# directory = "definition/"
+	# areas = _load_areas(directory + "areas.yaml")
+	# components = _load_components(directory + "components.yaml")
+	# levels = _load_levels(directory + "levels.yaml")
+	# teams = _load_teams(directory + "teams.yaml")
+	areas = _load_areas(areas_file)
+	components = _load_components(components_file)
+	levels = _load_levels(levels_file)
+	teams = _load_teams(teams_file)
+
+	root = Digraph(name, filename=output_file, format="png")
+	_add_detail_area_digraph(root, areas)
+
 
 
 def _print_usage():
