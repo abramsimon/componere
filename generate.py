@@ -107,7 +107,14 @@ class Team:
 	lead_contact = None
 	display = None
 
-	def __init__(self, identifier, name=None, team_contact=None, lead_contact=None, display=None):
+	def __init__(
+		self,
+		identifier,
+		name=None,
+		team_contact=None,
+		lead_contact=None,
+		display=None
+	):
 		self.identifier = identifier
 		self.name = name
 		self.team_contact = team_contact
@@ -147,8 +154,19 @@ class Component:
 	release_date = None
 	dependency_identifiers = None
 
-	def __init__(self, identifier, name=None, level_identifier=None, type=None, team_identifier=None,
-			area_identifier=None, description=None, git=None, release_date=None, dependency_identifiers=None):
+	def __init__(
+		self,
+		identifier,
+		name=None,
+		level_identifier=None,
+		type=None,
+		team_identifier=None,
+		area_identifier=None,
+		description=None,
+		git=None,
+		release_date=None,
+		dependency_identifiers=None
+	):
 		self.identifier = identifier
 		self.name = name
 		self.level_identifier = level_identifier
@@ -174,8 +192,18 @@ class Component:
 		release_date = values_dict.get("release-date")
 		dependency_identifiers = values_dict.get("dependencies")
 
-		return Component(identifier, name, level, type, team_identifier, area_identifier, description, git,
-			release_date, dependency_identifiers)
+		return Component(
+			identifier,
+			name,
+			level,
+			type,
+			team_identifier,
+			area_identifier,
+			description,
+			git,
+			release_date,
+			dependency_identifiers
+		)
 
 	@classmethod
 	def from_collection_dict(cls, collection_dict):
@@ -247,9 +275,11 @@ def _load_components(file):
 
 def _find_child_areas(areas, parent_area_identifier):
 	found_areas = []
-	for area in areas:
+	for area in areas.values():
+		#Source
 		if parent_area_identifier is None and area.parent_identifier is None:
 			found_areas.append(area)
+		#Child
 		elif area.parent_identifier == parent_area_identifier:
 			found_areas.append(area)
 	return found_areas
@@ -257,7 +287,7 @@ def _find_child_areas(areas, parent_area_identifier):
 
 def _find_area_components(components, area_identifier):
 	found_components = []
-	for component in components:
+	for component in components.values():
 		if area_identifier is None and component.area_identifier is None:
 			found_components.append(component)
 		elif component.area_identifier == area_identifier:
@@ -265,7 +295,27 @@ def _find_area_components(components, area_identifier):
 	return found_components
 
 
-def _add_detail_area_digraph(digraph, areas, area=None, depth=1):
+def _add_area_with_components_inside(area, area_components, teams):
+	digraph = Digraph("cluster_area_" + area.identifier)
+	digraph.body.append("label = " + '"' + area.name + '"')
+	for component in area_components:
+		digraph.node(
+			component.identifier,
+			label=component.name,
+			style='filled',
+			color=teams[component.team_identifier].display.background_color,
+			fontcolor=teams[component.team_identifier].display.foreground_color,
+		)
+	return digraph
+
+def _add_detail_area_components_digraph(
+	digraph,
+	areas,
+	components,
+	teams,
+	area=None,
+	depth=1
+):
 	if depth > 100:
 		raise Exception("Too many recursions")
 
@@ -273,28 +323,66 @@ def _add_detail_area_digraph(digraph, areas, area=None, depth=1):
 	if digraph is not None:
 		parent_digraph = digraph
 	else:
-		parent_digraph = Digraph("area." + area.identifier)
-		parent_digraph.attributes("node", shape="square")
+		parent_digraph = _add_area_with_components_inside(
+			area,
+			_find_area_components(components, area.identifier),
+			teams
+		)
 
-	for child_area in _find_child_areas(areas, area.identifier):
-		parent_digraph.subgraph(_add_detail_area_digraph(areas, child_area, depth + 1))
+	for child_area in _find_child_areas(
+		areas, area.identifier if area is not None else None
+	):
+		parent_digraph.subgraph(_add_detail_area_components_digraph(
+			None,
+			areas,
+			components,
+			teams,
+			child_area,
+			depth + 1)
+		)
 
 	return parent_digraph
 
-def _build_detail_digraph(name, output_file, areas_file, components_file, levels_file, teams_file):
-	# directory = "definition/"
-	# areas = _load_areas(directory + "areas.yaml")
-	# components = _load_components(directory + "components.yaml")
-	# levels = _load_levels(directory + "levels.yaml")
-	# teams = _load_teams(directory + "teams.yaml")
+
+def _add_components_edges_digraph(digraph, components):
+	for component in components.values():
+		if component.dependency_identifiers is not None:
+			for dependency_identifier in component.dependency_identifiers:
+				#only add edges between pre-existed nodes
+				digraph.edge(component.identifier, dependency_identifier)
+
+
+def _add_teams_color_map(parent_digraph, teams):
+	color_map = Digraph("cluster_area.teams_color_map")
+	color_map.body.append('label = "Teams Colors Map"')
+	for team_identifier, team in teams.iteritems():
+		color_map.node(
+			team_identifier,
+			label=team.name,
+			style='filled',
+			color=team.display.background_color,
+			fontcolor=team.display.foreground_color,
+		)
+	parent_digraph.subgraph(color_map)
+
+
+def _build_detail_digraph(
+	name,
+	output_file,
+	areas_file,
+	components_file,
+	levels_file,
+	teams_file
+):
 	areas = _load_areas(areas_file)
 	components = _load_components(components_file)
 	levels = _load_levels(levels_file)
 	teams = _load_teams(teams_file)
-
 	root = Digraph(name, filename=output_file, format="png")
-	_add_detail_area_digraph(root, areas)
-
+	_add_detail_area_components_digraph(root, areas, components, teams)
+	_add_components_edges_digraph(root, components)
+	_add_teams_color_map(root, teams)
+	root.view()
 
 
 def _print_usage():
@@ -325,7 +413,6 @@ def _main(argv):
 		return 2
 
 	directory = None
-
 	if command in ["detail", "overview", "areas", "all"]:
 		if len(argv) != 2:
 			_print_usage()
@@ -346,6 +433,22 @@ def _main(argv):
 		_print_usage()
 		print "ERROR: {0} does not exist or is not a directory".format(directory)
 		return 5
+
+	def_directory = "definition/"
+	areas_file = def_directory + "areas.yaml"
+	components_file = def_directory + "components.yaml"
+	levels_file = def_directory + "levels.yaml"
+	teams_file = def_directory + "teams.yaml"
+
+	if command == "detail" or command == "all":
+		_build_detail_digraph(
+			"Detail",
+			directory + "/detail",
+			areas_file,
+			components_file,
+			levels_file,
+			teams_file
+		)
 
 	return 0
 

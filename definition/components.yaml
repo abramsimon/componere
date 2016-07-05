@@ -1,4 +1,5 @@
 android:
+    name: Android
     level: application
     type: apk
     team: demand
@@ -11,6 +12,7 @@ android:
         - api
 
 investigo-android:
+    name: Investigo Android
     level: library
     type: jar
     team: opensource
@@ -20,6 +22,7 @@ investigo-android:
     release-date: 2016-04-14
 
 kuasa:
+    name: Kuasa
     level: application
     type: war
     team: supply
@@ -29,6 +32,7 @@ kuasa:
     release-date: 2016-04-14
 
 lumina:
+    name: Lumina
     level: application
     type: war
     team: demand
@@ -38,6 +42,7 @@ lumina:
     release-date: 2016-04-14
 
 api:
+    name: API
     level: application
     type: war
     team: supply
@@ -49,6 +54,7 @@ api:
         - ods
         - ods-es
 ods:
+    name: ODS
     level: foundation
     type: postgresql
     team: infra
@@ -58,6 +64,7 @@ ods:
     release-date: 2016-04-14
 
 events:
+    name: Events
     level: application
     type: war
     team: supply
@@ -71,6 +78,7 @@ events:
         - pipeline-inbound
 
 ods-es:
+    name: ODS ES
     level: foundation
     type: war
     team: supply
@@ -80,6 +88,7 @@ ods-es:
     release-date: 2016-04-14
 
 pipeline-inbound:
+    name: Pipeline Inbound
     level: foundation
     type: s3
     team: infra
@@ -89,6 +98,7 @@ pipeline-inbound:
     release-date: 2016-04-14
 
 pipeline:
+    name: Pipeline
     level: application
     type: war
     team: infra
@@ -101,6 +111,7 @@ pipeline:
         - pipeline-outbound
 
 pipeline-outbound:
+    name: Pipeline Outbound
     level: foundation
     type: s3
     team: infra
@@ -110,6 +121,7 @@ pipeline-outbound:
     release-date: 2016-04-14
 
 auto-qc:
+    name: Auto Qc
     level: application
     type: war
     team: optimization
@@ -122,6 +134,7 @@ auto-qc:
         - app-backend
 
 app-backend:
+    name: App Backend
     level: application
     type: war
     team: infra
