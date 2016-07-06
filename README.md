@@ -1,6 +1,6 @@
 Premise Componere
 =================
-Configuration and diagram generation of the architecture diagrams. There are a few diagrams that generated.
+Configuration and diagram generation of the architecture diagrams. There are a few diagrams that are generated.
 
 1.  Detail /wiki/detail.png
     * Shows every component
