@@ -1,4 +1,4 @@
-digraph Detail {
+digraph supply {
 	subgraph cluster_area_premise {
 	label = "Premise"
 		subgraph cluster_area_supply {
@@ -11,43 +11,31 @@ digraph Detail {
 		}
 		subgraph cluster_area_platform {
 		label = "Platform"
-			"auto-qc" [label="Auto Qc" color=yellow fontcolor=blue style=filled]
 			"app-backend" [label="App Backend" color=blue fontcolor=white style=filled]
 			subgraph cluster_area_pipeline {
 			label = "Pipeline"
-				pipeline [label=Pipeline color=blue fontcolor=white style=filled]
-				"pipeline-outbound" [label="Pipeline Outbound" color=blue fontcolor=white style=filled]
 				"pipeline-inbound" [label="Pipeline Inbound" color=blue fontcolor=white style=filled]
 			}
 		}
 		subgraph cluster_area_demand {
 		label = "Demand"
-			lumina [label=Lumina color=green fontcolor=red style=filled]
 			android [label=Android color=green fontcolor=red style=filled]
 		}
 	}
 	subgraph "cluster_area_3rd-party" {
 	label = "3rd Party"
-		"investigo-android" [label="Investigo Android" color=gray fontcolor=red style=filled]
 	}
-		"auto-qc" -> "pipeline-outbound"
-		"auto-qc" -> "app-backend"
-		pipeline -> "pipeline-inbound"
-		pipeline -> "pipeline-outbound"
+		"app-backend" -> ods
 		api -> ods
 		api -> "ods-es"
-		"app-backend" -> ods
-		android -> "investigo-android"
 		android -> api
 		events -> ods
 		events -> "ods-es"
 		events -> "pipeline-inbound"
 	subgraph "cluster_area.teams_color_map" {
 	label = "Teams Colors Map"
-		opensource [label="Open Source" color=gray fontcolor=red style=filled]
-		supply [label=Supply color=red fontcolor=yellow style=filled]
-		optimization [label=Optimization color=yellow fontcolor=blue style=filled]
-		infra [label=Infrastructure color=blue fontcolor=white style=filled]
 		demand [label=Demand color=green fontcolor=red style=filled]
+		infra [label=Infrastructure color=blue fontcolor=white style=filled]
+		supply [label=Supply color=red fontcolor=yellow style=filled]
 	}
 }
