@@ -9,9 +9,6 @@ class GenerateTest(TestCase):
 		for command in ["detail", "overview", "areas", "all"]:
 			self.assertEqual(3, generate._main([command]))
 
-		for command in ["detail", "overview", "areas", "all"]:
-			self.assertEqual(5, generate._main([command, "1234"]))
-
 		self.assertEqual(4, generate._main(["area"]))
 		self.assertEqual(4, generate._main(["area", "foo"]))
 

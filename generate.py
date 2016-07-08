@@ -295,15 +295,37 @@ def _find_area_components(components, area_identifier):
 	return found_components
 
 
-def _add_area_with_components_inside(area, area_components, teams):
+def _draw_node_label_table(teams, component):
+	node_label = '<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="'
+	node_label += teams[component.team_identifier].display.background_color
+	node_label += '"><TR><TD BORDER="1"><FONT POINT-SIZE="13">'
+	node_label += '&lt;&lt;' + component.type + '&gt;&gt;<BR/>'
+	node_label += component.name + '</FONT></TD></TR>'
+	node_label += '<TR><TD BORDER="1" BALIGN="LEFT">'
+	node_label += '+&nbsp;' + component.level_identifier + '&nbsp;:&nbsp;level'
+
+	# For adding more attributes to the node
+	if component.release_date is not None:
+		node_label += '<BR/>+&nbsp;' + component.release_date.strftime('%m/%d/%Y')
+		node_label += '&nbsp;:&nbsp;release date'
+
+	node_label += '</TD></TR></TABLE>>'
+	return node_label
+
+
+def _add_area_with_components_inside(area, area_components, teams, highlited_area_identifier=None):
 	digraph = Digraph("cluster_area_" + area.identifier)
 	digraph.body.append("label = " + '"' + area.name + '"')
+	digraph.body.append('style=bold labeljust="l" fontsize="20"')
+	if highlited_area_identifier == area.identifier:
+		digraph.body.append('style="filled, bold" fillcolor=lightgrey')
 	for component in area_components.values():
 		digraph.node(
 			component.identifier,
-			label=component.name,
-			style='filled',
-			color=teams[component.team_identifier].display.background_color,
+			label=_draw_node_label_table(teams, component),
+			fontname="Bitstream Vera Sans",
+			fontsize="12",
+			shape="plaintext",
 			fontcolor=teams[component.team_identifier].display.foreground_color,
 		)
 	return digraph
@@ -315,7 +337,8 @@ def _add_detail_area_components_digraph(
 	components,
 	teams,
 	area=None,
-	depth=1
+	highlited_area_identifier=None,
+	depth=1,
 ):
 	if depth > 100:
 		raise Exception("Too many recursions")
@@ -327,7 +350,8 @@ def _add_detail_area_components_digraph(
 		parent_digraph = _add_area_with_components_inside(
 			area,
 			_find_area_components(components, area.identifier),
-			teams
+			teams,
+			highlited_area_identifier,
 		)
 
 	for child_area in _find_child_areas(
@@ -339,8 +363,9 @@ def _add_detail_area_components_digraph(
 			components,
 			teams,
 			child_area,
-			depth + 1)
-		)
+			highlited_area_identifier,
+			depth + 1,
+		))
 
 	return parent_digraph
 
@@ -351,11 +376,14 @@ def _add_components_edges_digraph(digraph, components):
 			for dependency_identifier in component.dependency_identifiers:
 				#only add edges between pre-existed nodes
 				if dependency_identifier in components:
-					digraph.edge(component.identifier, dependency_identifier)
+					digraph.edge(component.identifier, dependency_identifier,
+						arrowhead='open', style="dashed"
+					)
 
 def _add_teams_color_map(parent_digraph, teams):
 	color_map = Digraph("cluster_area.teams_color_map")
 	color_map.body.append('label = "Teams Colors Map"')
+	color_map.body.append('labeljust="l" fontsize="20"')
 	for team_identifier, team in teams.iteritems():
 		color_map.node(
 			team_identifier,
@@ -432,7 +460,8 @@ def _add_specific_area_digraph(
 	areas,
 	area,
 	components,
-	teams
+	teams,
+	highlited_area_identifier=None,
 ):
 	area_recursive_components = _find_recursive_components_within_area(
 		components,
@@ -449,6 +478,8 @@ def _add_specific_area_digraph(
 		areas,
 		showed_components,
 		teams,
+		None,
+		highlited_area_identifier,
 	)
 	_add_components_edges_digraph(digraph, showed_components)
 	_add_teams_color_map(digraph, _find_showed_teams(showed_components, teams))
@@ -464,7 +495,7 @@ def _build_area_digraph(
 	for area_identifier, area in areas.iteritems():
 		if specific_area_identifier is None or specific_area_identifier == area_identifier:
 			root = Digraph(area_identifier, filename=output_file+area_identifier, format="png")
-			_add_specific_area_digraph(root, areas, area, components, teams)
+			_add_specific_area_digraph(root, areas, area, components, teams, area_identifier)
 			root.view()
 
 def _get_components_for_level(components, levels, level_order):
@@ -479,9 +510,13 @@ def _add_component_edges(digraph, component, all_components, components, parent=
 		for dependency_identifier in component.dependency_identifiers:
 			if dependency_identifier in components:
 				if parent is None:
-					digraph.edge(component.identifier, dependency_identifier)
+					digraph.edge(component.identifier, dependency_identifier,
+						arrowhead='open', style="dashed"
+					)
 				else:
-					digraph.edge(parent.identifier, dependency_identifier, style='dashed')
+					digraph.edge(parent.identifier, dependency_identifier,
+						arrowhead='open', style="dashed", label="\<\<transitive\>\>"
+					)
 			else:
 				_add_component_edges(
 					digraph, all_components[dependency_identifier],
@@ -558,9 +593,7 @@ def _main(argv):
 		directory = argv[2]
 
 	if not os.path.isdir(directory):
-		_print_usage()
-		print "ERROR: {0} does not exist or is not a directory".format(directory)
-		return 5
+		os.mkdir(directory)
 
 	areas = _load_areas(areas_file)
 	components = _load_components(components_file)

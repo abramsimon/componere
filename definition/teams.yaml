@@ -6,8 +6,8 @@ infra:
         name: Dan Whitman
         email: dan@premise.com
     display:
-        background-color: blue
-        foreground-color: white
+        background-color: lightblue
+        foreground-color: black
 demand:
     name: Demand
     team-contact:
@@ -26,8 +26,8 @@ supply:
         name:
         email:
     display:
-        background-color: red
-        foreground-color: yellow
+        background-color: lightsalmon
+        foreground-color: blue
 optimization:
     name: Optimization
     team-contact:

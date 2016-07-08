@@ -1,41 +1,49 @@
 digraph supply {
 	subgraph cluster_area_premise {
 	label = "Premise"
+	style=bold labeljust="l" fontsize="20"
 		subgraph cluster_area_supply {
 		label = "Supply"
-			kuasa [label=Kuasa color=red fontcolor=yellow style=filled]
-			"ods-es" [label="ODS ES" color=red fontcolor=yellow style=filled]
-			ods [label=ODS color=blue fontcolor=white style=filled]
-			events [label=Events color=red fontcolor=yellow style=filled]
-			api [label=API color=red fontcolor=yellow style=filled]
+		style=bold labeljust="l" fontsize="20"
+		style="filled, bold" fillcolor=lightgrey
+			kuasa [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightsalmon"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;war&gt;&gt;<BR/>Kuasa</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;application&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=blue fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
+			"ods-es" [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightsalmon"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;war&gt;&gt;<BR/>ODS ES</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;foundation&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=blue fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
+			ods [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightblue"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;postgresql&gt;&gt;<BR/>ODS</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;foundation&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=black fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
+			events [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightsalmon"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;war&gt;&gt;<BR/>Events</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;application&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=blue fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
+			api [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightsalmon"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;war&gt;&gt;<BR/>API</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;application&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=blue fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
 		}
 		subgraph cluster_area_platform {
 		label = "Platform"
-			"app-backend" [label="App Backend" color=blue fontcolor=white style=filled]
+		style=bold labeljust="l" fontsize="20"
+			"app-backend" [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightblue"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;war&gt;&gt;<BR/>App Backend</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;application&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=black fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
 			subgraph cluster_area_pipeline {
 			label = "Pipeline"
-				"pipeline-inbound" [label="Pipeline Inbound" color=blue fontcolor=white style=filled]
+			style=bold labeljust="l" fontsize="20"
+				"pipeline-inbound" [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="lightblue"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;s3&gt;&gt;<BR/>Pipeline Inbound</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;foundation&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=black fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
 			}
 		}
 		subgraph cluster_area_demand {
 		label = "Demand"
-			android [label=Android color=green fontcolor=red style=filled]
+		style=bold labeljust="l" fontsize="20"
+			android [label=<<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="4" BGCOLOR="green"><TR><TD BORDER="1"><FONT POINT-SIZE="13">&lt;&lt;apk&gt;&gt;<BR/>Android</FONT></TD></TR><TR><TD BORDER="1" BALIGN="LEFT">+&nbsp;application&nbsp;:&nbsp;level<BR/>+&nbsp;04/14/2016&nbsp;:&nbsp;release date</TD></TR></TABLE>> fontcolor=red fontname="Bitstream Vera Sans" fontsize=12 shape=plaintext]
 		}
 	}
 	subgraph "cluster_area_3rd-party" {
 	label = "3rd Party"
+	style=bold labeljust="l" fontsize="20"
 	}
-		"app-backend" -> ods
-		api -> ods
-		api -> "ods-es"
-		android -> api
-		events -> ods
-		events -> "ods-es"
-		events -> "pipeline-inbound"
+		"app-backend" -> ods [arrowhead=open style=dashed]
+		api -> ods [arrowhead=open style=dashed]
+		api -> "ods-es" [arrowhead=open style=dashed]
+		android -> api [arrowhead=open style=dashed]
+		events -> ods [arrowhead=open style=dashed]
+		events -> "ods-es" [arrowhead=open style=dashed]
+		events -> "pipeline-inbound" [arrowhead=open style=dashed]
 	subgraph "cluster_area.teams_color_map" {
 	label = "Teams Colors Map"
+	labeljust="l" fontsize="20"
 		demand [label=Demand color=green fontcolor=red style=filled]
-		infra [label=Infrastructure color=blue fontcolor=white style=filled]
-		supply [label=Supply color=red fontcolor=yellow style=filled]
+		infra [label=Infrastructure color=lightblue fontcolor=black style=filled]
+		supply [label=Supply color=lightsalmon fontcolor=blue style=filled]
 	}
 }
