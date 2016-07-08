@@ -1,0 +1,37 @@
+digraph Overview {
+	subgraph cluster_area_premise {
+	label = "Premise"
+		subgraph cluster_area_supply {
+		label = "Supply"
+			kuasa [label=Kuasa color=red fontcolor=yellow style=filled]
+			api [label=API color=red fontcolor=yellow style=filled]
+			events [label=Events color=red fontcolor=yellow style=filled]
+		}
+		subgraph cluster_area_platform {
+		label = "Platform"
+			"auto-qc" [label="Auto Qc" color=yellow fontcolor=blue style=filled]
+			"app-backend" [label="App Backend" color=blue fontcolor=white style=filled]
+			subgraph cluster_area_pipeline {
+			label = "Pipeline"
+				pipeline [label=Pipeline color=blue fontcolor=white style=filled]
+			}
+		}
+		subgraph cluster_area_demand {
+		label = "Demand"
+			lumina [label=Lumina color=green fontcolor=red style=filled]
+			android [label=Android color=green fontcolor=red style=filled]
+		}
+	}
+	subgraph "cluster_area_3rd-party" {
+	label = "3rd Party"
+	}
+		"auto-qc" -> "app-backend"
+		android -> api
+	subgraph "cluster_area.teams_color_map" {
+	label = "Teams Colors Map"
+		supply [label=Supply color=red fontcolor=yellow style=filled]
+		optimization [label=Optimization color=yellow fontcolor=blue style=filled]
+		infra [label=Infrastructure color=blue fontcolor=white style=filled]
+		demand [label=Demand color=green fontcolor=red style=filled]
+	}
+}

@@ -370,13 +370,10 @@ def _add_teams_color_map(parent_digraph, teams):
 def _build_detail_digraph(
 	name,
 	output_file,
-	areas_file,
-	components_file,
-	teams_file
+	areas,
+	components,
+	teams
 ):
-	areas = _load_areas(areas_file)
-	components = _load_components(components_file)
-	teams = _load_teams(teams_file)
 	root = Digraph(name, filename=output_file, format="png")
 	_add_detail_area_components_digraph(root, areas, components, teams)
 	_add_components_edges_digraph(root, components)
@@ -459,26 +456,52 @@ def _add_specific_area_digraph(
 
 def _build_area_digraph(
 	output_file,
-	areas_file,
-	components_file,
-	teams_file,
+	areas,
+	components,
+	teams,
 	specific_area_identifier=None,
 ):
-	areas = _load_areas(areas_file)
-	components = _load_components(components_file)
-	teams = _load_teams(teams_file)
 	for area_identifier, area in areas.iteritems():
 		if specific_area_identifier is None or specific_area_identifier == area_identifier:
 			root = Digraph(area_identifier, filename=output_file+area_identifier, format="png")
 			_add_specific_area_digraph(root, areas, area, components, teams)
 			root.view()
 
+def _get_components_for_level(components, levels, level_order):
+	level_components = {}
+	for component in components.values():
+		if levels[component.level_identifier].order >= level_order:
+			level_components[component.identifier] = component
+	return level_components
+
+def _add_component_edges(digraph, component, all_components, components, parent=None):
+	if component.dependency_identifiers is not None:
+		for dependency_identifier in component.dependency_identifiers:
+			if dependency_identifier in components:
+				if parent is None:
+					digraph.edge(component.identifier, dependency_identifier)
+				else:
+					digraph.edge(parent.identifier, dependency_identifier, style='dashed')
+			else:
+				_add_component_edges(
+					digraph, all_components[dependency_identifier],
+					all_components, components, component
+				)
+
+def _build_overview_digraph(name, output_file, areas, components, levels, teams, level_order):
+	root = Digraph(name, filename=output_file, format="png")
+	overview_components = _get_components_for_level(components, levels, level_order)
+	_add_detail_area_components_digraph(root, areas, overview_components, teams)
+	for component in overview_components.values():
+		_add_component_edges(root, component, components, overview_components)
+	_add_teams_color_map(root, _find_showed_teams(overview_components, teams))
+	root.view()
 
 def _print_usage():
 	print "Usage:"
 	print "  generate.py detail <directory>"
 	print "    Generates a Detail Diagram detail.png and detail.html into the <directory>"
-	print "  generate.py overview <directory>"
+	print "  generate.py overview <level_order> <directory>"
 	print "    Generates an Overview diagram overview.png and overview.html into the <directory>"
 	print "  generate.py area <area> <directory>"
 	print "    Generates an Area diagram <area>.png and <area>.html into the <directory>"
@@ -505,15 +528,25 @@ def _main(argv):
 	def_directory = "definition/"
 	areas_file = def_directory + "areas.yaml"
 	components_file = def_directory + "components.yaml"
-	#levels_file = def_directory + "levels.yaml"
+	levels_file = def_directory + "levels.yaml"
 	teams_file = def_directory + "teams.yaml"
 
-	if command in ["detail", "overview", "areas", "all"]:
+	if command in ["detail", "areas", "all"]:
 		if len(argv) != 2:
 			_print_usage()
 			print "ERROR: Output directory not given"
 			return 3
 		directory = argv[1]
+
+	level_order = 50
+	if command == "overview":
+		if len(argv) < 2:
+			_print_usage()
+			print "ERROR: Output directory not given"
+			return 3
+		if len(argv) == 3 and argv[1].isdigit():
+			level_order = int(argv[1])
+		directory = argv[len(argv) - 1]
 
 	area = None
 	if command == "area":
@@ -529,22 +562,37 @@ def _main(argv):
 		print "ERROR: {0} does not exist or is not a directory".format(directory)
 		return 5
 
-	if command == "area" or command == "areas" or command == "all":
-		_build_area_digraph(
-			directory + "/areas/",
-			areas_file,
-			components_file,
-			teams_file,
-			area
-		)
+	areas = _load_areas(areas_file)
+	components = _load_components(components_file)
+	teams = _load_teams(teams_file)
 
-	if command == "detail" or command == "all":
+	if command in ["detail", "all"]:
 		_build_detail_digraph(
 			"Detail",
 			directory + "/detail",
-			areas_file,
-			components_file,
-			teams_file
+			areas,
+			components,
+			teams
+		)
+
+	if command in ["overview", "all"]:
+		_build_overview_digraph(
+			"Overview",
+			directory + "/overview",
+			areas,
+			components,
+			_load_levels(levels_file),
+			teams,
+			level_order
+		)
+
+	if command in ["area", "areas", "all"]:
+		_build_area_digraph(
+			directory + "/areas/",
+			areas,
+			components,
+			teams,
+			area
 		)
 
 	return 0
