@@ -1,0 +1,77 @@
+from graphviz import Digraph
+import generate_area
+import generate_component
+
+
+def get_components_for_level(components, levels, level_order):
+	level_components = {}
+	for component in components.values():
+		if levels[component.level_identifier].order >= level_order:
+			level_components[component.identifier] = component
+	return level_components
+
+
+def add_component_edges(
+    digraph,
+    component,
+    all_components,
+    components,
+    parent=None,
+):
+    if component.dependency_identifiers is not None:
+		for dependency_identifier in component.dependency_identifiers:
+			if dependency_identifier in components:
+				if parent is None:
+					digraph.edge(
+                        component.identifier,
+                        dependency_identifier,
+						arrowhead='open',
+                        style="dashed",
+					)
+				else:
+					digraph.edge(
+                        parent.identifier,
+                        dependency_identifier,
+						arrowhead='open',
+                        style="dashed",
+                        label="\<\<transitive\>\>",
+					)
+			else:
+				add_component_edges(
+					digraph,
+                    all_components[dependency_identifier],
+					all_components,
+                    components,
+                    component
+				)
+
+
+def build_overview_digraph(
+    name,
+    output_file,
+    areas,
+    components,
+    levels,
+    teams,
+    level_order
+):
+	root = Digraph(name, filename=output_file, format="png")
+	overview_components = get_components_for_level(
+        components,
+        levels,
+        level_order,
+    )
+	generate_area.add_detail_area_components_digraph(
+        root,
+        areas,
+        overview_components,
+        teams,
+    )
+	for component in overview_components.values():
+		add_component_edges(root, component, components, overview_components)
+
+	generate_component.add_teams_color_map(
+        root,
+        generate_component.find_showed_teams(overview_components, teams),
+    )
+	root.render(view=False, cleanup=True)
