@@ -560,7 +560,7 @@ def _main(argv):
 		return 2
 
 	directory = None
-	def_directory = "definition/"
+	def_directory = "system/"
 	areas_file = def_directory + "areas.yaml"
 	components_file = def_directory + "components.yaml"
 	levels_file = def_directory + "levels.yaml"
