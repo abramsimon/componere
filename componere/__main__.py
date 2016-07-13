@@ -547,7 +547,7 @@ def _print_usage():
 	print "    Invokes detail, overview, areas all to the <directory>"
 
 
-def _main(argv):
+def _main(argv=sys.argv[1:]):
 	if len(argv) < 1:
 		return _main(["all", "wiki"])
 
