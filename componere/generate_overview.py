@@ -12,12 +12,12 @@ def get_components_for_level(components, levels, level_order):
 
 
 def add_component_edges(
-    digraph,
-    component,
-    all_components,
-    components,
-	visited,
-    parent=None,
+	digraph,
+	component,
+	all_components,
+	components,
+	visited={},
+	parent=None,
 ):
 	if component.identifier in visited:
 		return
@@ -27,57 +27,56 @@ def add_component_edges(
 			if dependency_identifier in components:
 				if parent is None:
 					digraph.edge(
-                        component.identifier,
-                        dependency_identifier,
+						component.identifier,
+						dependency_identifier,
 						arrowhead='open',
-                        style="dashed",
+						style="dashed",
 					)
 				else:
 					digraph.edge(
-                        parent.identifier,
-                        dependency_identifier,
+						parent.identifier,
+						dependency_identifier,
 						arrowhead='open',
-                        style="dashed",
-                        label="\<\<transitive\>\>",
+						style="dashed",
+						label="\<\<transitive\>\>",
 					)
 			else:
 				add_component_edges(
 					digraph,
-                    all_components[dependency_identifier],
+					all_components[dependency_identifier],
 					all_components,
-                    components,
+					components,
 					visited,
-                    component
+					component if parent is None else parent
 				)
 
 
 def build_overview_digraph(
-    name,
-    output_file,
-    areas,
-    components,
-    levels,
-    teams,
-    level_order
+	name,
+	output_file,
+	areas,
+	components,
+	levels,
+	teams,
+	level_order
 ):
 	root = Digraph(name, filename=output_file + "level_" + str(level_order), format="png")
 	overview_components = get_components_for_level(
-        components,
-        levels,
-        level_order,
-    )
+		components,
+		levels,
+		level_order,
+	)
 	generate_area.add_detail_area_components_digraph(
-        root,
-        areas,
-        overview_components,
-        teams,
-    )
+		root,
+		areas,
+		overview_components,
+		teams,
+	)
 	for component in overview_components.values():
-		visited = {}
-		add_component_edges(root, component, components, overview_components, visited)
+		add_component_edges(root, component, components, overview_components)
 
 	generate_component.add_teams_color_map(
-        root,
-        generate_component.find_showed_teams(overview_components, teams),
-    )
+		root,
+		generate_component.find_showed_teams(overview_components, teams),
+	)
 	root.render(view=False, cleanup=True)

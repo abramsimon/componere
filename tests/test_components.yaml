@@ -17,6 +17,7 @@ a2:
     release-date: 2016-04-14
     dependencies:
         - a3
+        - a1
 
 a3:
     name: A3
@@ -25,6 +26,8 @@ a3:
     team: team-3
     area: AS1
     release-date: 2016-04-14
+    dependencies:
+        - a1
 
 a4:
     name: A4
@@ -44,3 +47,5 @@ b1:
     team: team-1
     area: B
     release-date: 2016-04-14
+    dependencies:
+        - b1
