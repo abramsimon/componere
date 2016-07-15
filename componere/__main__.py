@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+"""
+componere:
+Usage:
+    componere <input> (--detail | --overview=<level> | --area=<area-name>| --areas | --all)... <output>
+    componere --i=<input> --o=<output> (--detail | --overview=<level> | --area=<area-name> |  --areas | --all)...
+    componere -h | --help
+
+Arguments:
+    <input>         Input directory containing the yaml files.
+    <output>        Output directory will contain output png files.
+
+Options:
+    -h--help            Show help page.
+    --i=<input>         Input directory containing the comp files
+                        or path of an only one input comp file.
+    --o=<output>        Output directory will contain output .png files.
+    --detail            Generates a Detail diagram detail.png into the <output>
+    --overview=<level>  Generates a Overview diagram level_<level>.png into the <output>/overview
+                        has all componets, that their level is higher than or equal to <level>.
+    --area=<area-name>  Generates an Area diagram <area-name>.png into the <output>/area.
+    --areas             Generates all Areas diagrams "each-area-name".png into the <output>/area.
+    --all               Generates all diagrams (detail, overview <level = 50>, and all areas)
+                        into the <output>.
+
+Examples:
+    componere ./system/input.comp --detail --overview ./wiki
+    componere --i=./system --detail  --o=./wiki --overview
+    componere --i=./system --area=platforn --area=application --o=./wiki
+    componere --i=./system --area=platforn --o=./wiki --all    #--all will dominate
+"""
 
 import sys
 import os
@@ -6,102 +36,73 @@ import load_input
 import generate_detail
 import generate_overview
 import generate_area
-
-def _print_usage():
-	print "Usage:"
-	print "  generate.py detail <directory>"
-	print "    Generates a Detail Diagram detail.png and detail.html into the <directory>"
-	print "  generate.py overview <level_order> <directory>"
-	print "    Generates an Overview diagram overview.png and overview.html into the <directory>"
-	print "  generate.py area <area> <directory>"
-	print "    Generates an Area diagram <area>.png and <area>.html into the <directory>"
-	print "  generate.py areas <directory>"
-	print "    Generates all Area diagrams areas.png and area.html into the <directory> and every area"
-	print "    into <directory>/areas/<area>.png <area>.html"
-	print "  generate.py all <directory>"
-	print "    Invokes detail, overview, areas all to the <directory>"
+from docopt import docopt
 
 
 def _main(argv=sys.argv[1:]):
-	if len(argv) < 1:
-		return _main(["all", "wiki"])
+	arguments = docopt(__doc__)
+	input_directory = arguments['--i'] if arguments['--i'] is not None else arguments['<input>']
+	output_directory = arguments['--o'] if arguments['--i'] is not None else arguments['<output>']
 
-	command = argv[0]
+	if not os.path.isdir(input_directory):
+		print "ERROR: Input directory doesn't exist"
+		return 3
+	if not os.path.isdir(output_directory):
+		os.mkdir(output_directory)
 
-	valid_commands = ["detail", "overview", "areas", "all", "area"]
-	if command not in valid_commands:
-		_print_usage()
-		print "ERROR: Command not one of {0}".format(valid_commands)
-		return 2
+	areas_file = input_directory + "/areas.yaml"
+	components_file = input_directory + "/components.yaml"
+	levels_file = input_directory + "/levels.yaml"
+	teams_file = input_directory + "/teams.yaml"
 
-	directory = None
-	def_directory = "system/"
-	areas_file = def_directory + "areas.yaml"
-	components_file = def_directory + "components.yaml"
-	levels_file = def_directory + "levels.yaml"
-	teams_file = def_directory + "teams.yaml"
+	all_commands = arguments['--all']
+	detail_commands = arguments['--detail']
+	areas_commands = arguments['--areas']
+	area_commands = set(arguments['--area'])
+	overview_commands = set(arguments['--overview'])
 
-	if command in ["detail", "areas", "all"]:
-		if len(argv) != 2:
-			_print_usage()
-			print "ERROR: Output directory not given"
-			return 3
-		directory = argv[1]
+	if all_commands != 0:
+		detail_commands = 1
+		overview_commands.add(50)
 
-	level_order = 50
-	if command == "overview":
-		if len(argv) < 2:
-			_print_usage()
-			print "ERROR: Output directory not given"
-			return 3
-		if len(argv) == 3 and argv[1].isdigit():
-			level_order = int(argv[1])
-		directory = argv[len(argv) - 1]
-
-	area = None
-	if command == "area":
-		if len(argv) != 3:
-			_print_usage()
-			print "ERROR: Area and/or directory not given"
-			return 4
-		area = argv[1]
-		directory = argv[2]
-
-	if not os.path.isdir(directory):
-		os.mkdir(directory)
+	if areas_commands != 0 or all_commands != 0:
+		area_commands.clear()
+		area_commands.add(None)
 
 	areas = load_input.load_areas(areas_file)
 	components = load_input.load_components(components_file)
 	teams = load_input.load_teams(teams_file)
 
-	if command in ["detail", "all"]:
+	if detail_commands > 0:
 		generate_detail.build_detail_digraph(
 			"Detail",
-			directory + "/detail",
+			output_directory + "/detail",
 			areas,
 			components,
 			teams
 		)
 
-	if command in ["overview", "all"]:
-		generate_overview.build_overview_digraph(
-			"Overview",
-			directory + "/overview",
-			areas,
-			components,
-			load_input.load_levels(levels_file),
-			teams,
-			level_order
-		)
+	if len(overview_commands) != 0:
+		for level_order in overview_commands:
+			generate_overview.build_overview_digraph(
+				"Overview",
+				output_directory + "/overview/",
+				areas,
+				components,
+				load_input.load_levels(levels_file),
+				teams,
+				int(level_order)
+			)
 
-	if command in ["area", "areas", "all"]:
-		generate_area.build_area_digraph(
-			directory + "/areas/",
-			areas,
-			components,
-			teams,
-			area
-		)
+	if len(overview_commands) != 0:
+		for area in area_commands:
+			generate_area.build_area_digraph(
+				output_directory + "/areas/",
+				areas,
+				components,
+				teams,
+				area
+			)
 
 	return 0
 

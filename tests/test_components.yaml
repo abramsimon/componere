@@ -1,21 +1,46 @@
-root:
-    name: Root
-    level: level-10
-    type: apk
+a1:
+    name: A1
+    level: level_50
+    type: Type-A
     team: team-1
-    area: partial
-    description: The Root Application
-    git: git@github.com:lolay/investigo-android.git
+    area: A
     release-date: 2016-04-14
     dependencies:
-        - dependency
+        - a4
 
-dependency:
-    name: Dependency
-    level: level-20
-    type: jar
+a2:
+    name: A2
+    level: level_20
+    type: Type-A
     team: team-2
-    area: partial-2
-    description: Dependency Level 20
-    git: git@github.com:lolay/investigo-android.git
+    area: AS2
+    release-date: 2016-04-14
+    dependencies:
+        - a3
+
+a3:
+    name: A3
+    level: level_50
+    type: Type-A
+    team: team-3
+    area: AS1
+    release-date: 2016-04-14
+
+a4:
+    name: A4
+    level: level_20
+    type: Type-A
+    team: team-2
+    area: AS1S1
+    release-date: 2016-04-14
+    dependencies:
+        - a2
+        - b1
+
+b1:
+    name: B1
+    level: level_50
+    type: Type-B
+    team: team-1
+    area: B
     release-date: 2016-04-14

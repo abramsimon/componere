@@ -16,9 +16,13 @@ def add_component_edges(
     component,
     all_components,
     components,
+	visited,
     parent=None,
 ):
-    if component.dependency_identifiers is not None:
+	if component.identifier in visited:
+		return
+	visited[component.identifier] = True
+	if component.dependency_identifiers is not None:
 		for dependency_identifier in component.dependency_identifiers:
 			if dependency_identifier in components:
 				if parent is None:
@@ -42,6 +46,7 @@ def add_component_edges(
                     all_components[dependency_identifier],
 					all_components,
                     components,
+					visited,
                     component
 				)
 
@@ -55,7 +60,7 @@ def build_overview_digraph(
     teams,
     level_order
 ):
-	root = Digraph(name, filename=output_file, format="png")
+	root = Digraph(name, filename=output_file + "level_" + str(level_order), format="png")
 	overview_components = get_components_for_level(
         components,
         levels,
@@ -68,7 +73,8 @@ def build_overview_digraph(
         teams,
     )
 	for component in overview_components.values():
-		add_component_edges(root, component, components, overview_components)
+		visited = {}
+		add_component_edges(root, component, components, overview_components, visited)
 
 	generate_component.add_teams_color_map(
         root,

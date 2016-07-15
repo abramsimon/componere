@@ -1,20 +1,34 @@
 team-1:
-    name: Team 1 Contact
+    name: Team 1
     team-contact:
         email: team-1@foo.com
     lead-contact:
         name: Lead Contact
         email: lead-1@foo.com
     display:
-        background-color: "#218041"
-        foreground-color: "#ffffff"
+        background-color: lightblue
+        foreground-color: black
+
+
 team-2:
-    name: Team 2 Contact
+    name: Team 2
     team-contact:
         email: team-2@foo.com
     lead-contact:
         name: Lead Contact
-        email: lead-2@foo.com
+        email: lead-1@foo.com
     display:
-        background-color: "#b4ca80"
-        foreground-color: "#000000"
+        background-color: green
+        foreground-color: red
+
+
+team-3:
+    name: Team 3
+    team-contact:
+        email: team-2@foo.com
+    lead-contact:
+        name: Lead Contact
+        email: lead-1@foo.com
+    display:
+        background-color: yellow
+        foreground-color: black

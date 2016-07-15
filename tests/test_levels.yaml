@@ -1,7 +1,7 @@
-level-10:
-    order: 10
-    name: Level 10
-
-level-20:
+level_20:
     order: 20
     name: Level 20
+
+level_50:
+    order: 50
+    name: Level 50

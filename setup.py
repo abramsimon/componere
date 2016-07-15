@@ -12,4 +12,4 @@ setup(name='componere',
             'componere = componere.__main__:_main',
         ]
       },
-      install_requires=['graphviz==0.4.10', 'pyyaml==3.10'])
+      install_requires=['graphviz==0.4.10', 'pyyaml==3.10', 'docopt==0.6.2'])
