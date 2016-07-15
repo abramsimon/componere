@@ -1,0 +1,28 @@
+levels:
+  level-10:
+      order: 10
+      name: Level 10
+
+  level-20:
+      order: 20
+      name: Level 20
+areas:
+  partial:
+    name: Partial
+
+  partial-2:
+    parent: partial
+
+  all:
+    name: All
+    parent: partial
+components:
+  dependency:
+      name: Dependency
+      level: level-20
+      type: jar
+      team: team-2
+      area: partial-2
+      description: Dependency Level 20
+      git: git@github.com:lolay/investigo-android.git
+      release-date: 2016-04-14

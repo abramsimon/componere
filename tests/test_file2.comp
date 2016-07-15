@@ -1,0 +1,36 @@
+areas:
+  mother-of-areas:
+    name: Mother of Areas
+teams:
+  team-3:
+      name: Team 3 Contact
+      team-contact:
+          email: team-3@foo.com
+      lead-contact:
+          name: Lead Contact
+          email: lead-3@foo.com
+      display:
+          background-color: "#218041"
+          foreground-color: "#ffffff"
+  team-4:
+      name: Team 4 Contact
+      team-contact:
+          email: team-4@foo.com
+      lead-contact:
+          name: Lead Contact
+          email: lead-4@foo.com
+      display:
+          background-color: "#b4ca80"
+          foreground-color: "#000000"
+components:
+  root:
+      name: Root
+      level: level-10
+      type: apk
+      team: team-1
+      area: partial
+      description: The Root Application
+      git: git@github.com:lolay/investigo-android.git
+      release-date: 2016-04-14
+      dependencies:
+          - dependency
