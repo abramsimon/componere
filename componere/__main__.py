@@ -38,74 +38,68 @@ import generate_overview
 import generate_area
 from docopt import docopt
 
-    
+
 def _main(argv=sys.argv[1:]):
-    arguments = docopt(__doc__, argv)
-    input_directory = arguments['--i'] if arguments['--i'] is not None else arguments['<input>']
-    output_directory = arguments['--o'] if arguments['--i'] is not None else arguments['<output>']
+	arguments = docopt(__doc__, argv)
+	input_path = arguments['--i'] if arguments['--i'] is not None else arguments['<input>']
+	output_directory = arguments['--o'] if arguments['--i'] is not None else arguments['<output>']
 
-    if not os.path.isdir(input_directory):
-    	print "ERROR: Input directory doesn't exist"
-    	return 3
-    if not os.path.isdir(output_directory):
-    	os.mkdir(output_directory)
+	areas = {}
+	components = {}
+	levels = {}
+	teams = {}
 
-    areas_file = input_directory + "/areas.yaml"
-    components_file = input_directory + "/components.yaml"
-    levels_file = input_directory + "/levels.yaml"
-    teams_file = input_directory + "/teams.yaml"
+	load_input.load_objects(input_path, areas, components, levels, teams)
 
-    all_commands = arguments['--all']
-    detail_commands = arguments['--detail']
-    areas_commands = arguments['--areas']
-    area_commands = set(arguments['--area'])
-    overview_commands = set(arguments['--overview'])
+	if not os.path.isdir(output_directory):
+		os.mkdir(output_directory)
 
-    if all_commands != 0:
-    	detail_commands = 1
-    	overview_commands.add(50)
+	all_commands = arguments['--all']
+	detail_commands = arguments['--detail']
+	areas_commands = arguments['--areas']
+	area_commands = set(arguments['--area'])
+	overview_commands = set(arguments['--overview'])
 
-    if areas_commands != 0 or all_commands != 0:
-    	area_commands.clear()
-    	area_commands.add(None)
+	if all_commands != 0:
+		detail_commands = 1
+		overview_commands.add(50)
 
-    areas = load_input.load_areas(areas_file)
-    components = load_input.load_components(components_file)
-    teams = load_input.load_teams(teams_file)
+	if areas_commands != 0 or all_commands != 0:
+		area_commands.clear()
+		area_commands.add(None)
 
-    if detail_commands > 0:
-    	generate_detail.build_detail_digraph(
-    		"Detail",
-    		output_directory + "/detail",
-    		areas,
-    		components,
-    		teams
-    	)
+	if detail_commands > 0:
+		generate_detail.build_detail_digraph(
+			"Detail",
+			output_directory + "/detail",
+			areas,
+			components,
+			teams
+		)
 
-    if len(overview_commands) != 0:
-    	for level_order in overview_commands:
-    		generate_overview.build_overview_digraph(
-    			"Overview",
-    			output_directory + "/overview/",
-    			areas,
-    			components,
-    			load_input.load_levels(levels_file),
-    			teams,
-    			int(level_order)
-    		)
+	if len(overview_commands) != 0:
+		for level_order in overview_commands:
+			generate_overview.build_overview_digraph(
+				"Overview",
+				output_directory + "/overview/",
+				areas,
+				components,
+				levels,
+				teams,
+				int(level_order)
+			)
 
-    if len(overview_commands) != 0:
-    	for area in area_commands:
-    		generate_area.build_area_digraph(
-    			output_directory + "/areas/",
-    			areas,
-    			components,
-    			teams,
-    			area
-    		)
+	if len(overview_commands) != 0:
+		for area in area_commands:
+			generate_area.build_area_digraph(
+				output_directory + "/areas/",
+				areas,
+				components,
+				teams,
+				area
+			)
 
-    return 0
-
+	return 0
 
 if __name__ == "__main__":
 	sys.exit(_main(sys.argv[1:]))
