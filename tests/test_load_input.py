@@ -19,9 +19,9 @@ class LoadInputTest(TestCase):
     def test_directory_load(self):
         path = "../componere/tests"
         load_objects(path, self.areas, self.components, self.levels, self.teams)
-        self.assertEqual(len(self.areas), 4)
-        self.assertEqual(len(self.components), 2)
-        self.assertEqual(len(self.levels), 2)
+        self.assertEqual(len(self.areas), 10)
+        self.assertEqual(len(self.components), 7)
+        self.assertEqual(len(self.levels), 4)
         self.assertEqual(len(self.teams), 4)
 
     def test_nested_directory_load(self):
