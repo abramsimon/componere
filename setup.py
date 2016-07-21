@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 setup(name='componere',
-      version='0.1.4',
+      version='0.1.5',
       url='https://github.com/premisedata/componere',
       author='Moustafa Maher and Mostafa Gabriel',
       author_email='mmaher@premise.com, mgabriel@premise.com',
