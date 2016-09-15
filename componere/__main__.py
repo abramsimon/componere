@@ -42,7 +42,7 @@ from docopt import docopt
 def _main(argv=sys.argv[1:]):
 	arguments = docopt(__doc__, argv)
 	input_path = arguments['--i'] if arguments['--i'] is not None else arguments['<input>']
-	output_directory = arguments['--o'] if arguments['--i'] is not None else arguments['<output>']
+	output_directory = arguments['--o'] if arguments['--o'] is not None else arguments['<output>']
 
 	areas = {}
 	components = {}
