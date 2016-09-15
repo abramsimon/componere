@@ -89,7 +89,7 @@ def _main(argv=sys.argv[1:]):
 				int(level_order)
 			)
 
-	if len(overview_commands) != 0:
+	if len(area_commands) != 0:
 		for area in area_commands:
 			generate_area.build_area_digraph(
 				output_directory + "/areas/",
