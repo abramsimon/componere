@@ -38,6 +38,102 @@ import generate_overview
 import generate_area
 from docopt import docopt
 
+def write_contact_to_file(file, list_name, contact):
+	if contact is None:
+		return
+	file.write("* {0}:\n".format(list_name))
+	if contact.name is not None:
+		file.write("  * Name: {0}\n".format(contact.name))
+	if contact.email is not None:
+		file.write("  * Email: {0}\n".format(contact.email))
+
+def write_components_sublist_to_file(file, list_name, sublist, components):
+	if sublist is None:
+		return
+	file.write("* {0}:\n".format(list_name))
+	for item in sorted(sublist):
+		file.write("  * [{0}]({1}.md)\n".format(components[item].name, item))
+
+def create_wiki(areas, components, levels, teams):
+	if not os.path.isdir("wiki"):
+		os.mkdir("wiki")
+
+	file = open("wiki/README.md", "w")
+
+	if not os.path.isdir("wiki/teams"):
+		os.mkdir("wiki/teams")
+
+	file.write("## Teams\n")
+	for team in sorted(teams):
+		obj = teams[team]
+		team_file = open("wiki/teams/{0}.md".format(obj.identifier), "w")
+		team_file.write("# {0}\n".format(obj.name))
+		write_contact_to_file(team_file, "Team Contact", obj.team_contact)
+		write_contact_to_file(team_file, "Lead Contact", obj.lead_contact)
+		team_file.close()
+		file.write("* [{0}](teams/{1}.md)\n".format(obj.name, obj.identifier))
+
+	if not os.path.isdir("wiki/components"):
+		os.mkdir("wiki/components")
+
+	depends_on = {}
+	for component in components:
+		dependents = components[component].dependency_identifiers
+		if dependents is not None:
+			for dependent in dependents:
+				if not dependent in depends_on:
+					depends_on[dependent] = []
+				depends_on[dependent].append(component)
+
+	file.write("\n## Components\n")
+	for component in sorted(components):
+		obj = components[component]
+		comp_file = open("wiki/components/{0}.md".format(obj.identifier), "w")
+		comp_file.write("# {0}\n".format(obj.name))
+		if obj.description is not None:
+			comp_file.write("### {0}\n".format(obj.description))
+		if obj.git is not None:
+			comp_file.write("* Git: {0}\n".format(obj.git))
+		if obj.release_date is not None:
+			comp_file.write("* Release Date: {0}\n".format(obj.release_date))
+		if obj.team_identifier is not None:
+			team_name = teams[obj.team_identifier].name
+			comp_file.write(
+				"* Team: [{0}](../teams/{1}.md)\n".format(team_name, obj.team_identifier)
+			)
+		if obj.type is not None:
+			comp_file.write("* Type: {0}\n".format(obj.type))
+		if obj.level_identifier is not None:
+			comp_file.write("* Level: {0}\n".format(levels[obj.level_identifier].name))
+		if obj.area_identifier is not None:
+			comp_file.write("* Area: [{0}](../areas/{1}.png)\n".format(
+				areas[obj.area_identifier].name, obj.area_identifier
+			))
+		write_components_sublist_to_file(
+			comp_file, "Dependents", obj.dependency_identifiers, components
+		)
+		write_components_sublist_to_file(
+			comp_file, "Depends On", depends_on.get(component), components
+		)
+		comp_file.close()
+		file.write("* [{0}](components/{1}.md)\n".format(obj.name, obj.identifier))
+
+	file.write("\n## Areas\n")
+	for area in sorted(areas):
+		obj = areas[area]
+		generate_area.build_area_digraph(
+			"wiki/areas/", areas, components, teams, area
+		)
+		file.write("* [{0}](areas/{1}.png)\n".format(
+			area if obj.name is None else obj.name, area
+		))
+
+	file.write("\n## Levels (Order)\n")
+	for level in sorted(levels):
+		obj = levels[level]
+		file.write("* {0} ({1})\n".format(level if obj.name is None else obj.name, obj.order))
+
+	file.close()
 
 def _main(argv=sys.argv[1:]):
 	arguments = docopt(__doc__, argv)
@@ -99,6 +195,7 @@ def _main(argv=sys.argv[1:]):
 				area
 			)
 
+	create_wiki(areas, components, levels, teams)
 	return 0
 
 if __name__ == "__main__":
