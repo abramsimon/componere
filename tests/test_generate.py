@@ -18,15 +18,17 @@ from test_Digraph import TestDigraph
 from graphviz import Digraph
 from mock import patch
 
+
 class GenerateTest(TestCase):
     def setUp(self):
         self.areas = {}
         self.components = {}
         self.levels = {}
         self.teams = {}
-        self.path = "../componere/tests/test_file.comp"
+        self.types = {}
+        self.path = "./tests/test_file.comp"
         TestDigraph.init()
-        load_input.load_objects(self.path, self.areas, self.components, self.levels, self.teams)
+        load_input.load_objects(self.path, self.areas, self.components, self.levels, self.teams, self.types)
 
     def test_generate_area(self):
         self.assertEqual(6, len(self.areas))
@@ -62,7 +64,6 @@ class GenerateTest(TestCase):
         )
         self.assertEqual(0, len(Empty_components))
 
-
     def test_generate_component(self):
         AS1S1_components = generate_area.find_recursive_components_within_area(
             self.components,
@@ -71,7 +72,7 @@ class GenerateTest(TestCase):
         )
         self.assertEqual(1, len(AS1S1_components))
         self.assertNotEqual(None, AS1S1_components.get("a4"))
-        AS1S1_connected_components  = generate_component.find_direct_connected_components(
+        AS1S1_connected_components = generate_component.find_direct_connected_components(
             self.components,
             AS1S1_components
         )
@@ -105,7 +106,8 @@ class GenerateTest(TestCase):
             )
             self.assertEqual(3, len(overview_components))
             for component_identifier in ["a1", "a3", "b1"]:
-                self.assertNotEqual(None, overview_components.get(component_identifier))
+                self.assertNotEqual(
+                    None, overview_components.get(component_identifier))
 
             root = Digraph("test_graph", filename="level_test")
             for component in overview_components.values():
@@ -119,19 +121,19 @@ class GenerateTest(TestCase):
         self.assertEqual(True, ('a3', 'a1') in TestDigraph.direct_edges)
         self.assertEqual(True, ('b1', 'b1') in TestDigraph.direct_edges)
 
-
     def test_generate_detail(self):
         with patch.object(
             Digraph, 'edge', TestDigraph.edge), patch.object(
             Digraph, 'subgraph', TestDigraph.subgraph), patch.object(
             Digraph, 'render', TestDigraph.render
-            ):
+        ):
             generate_detail.build_detail_digraph(
                 "test",
                 "test",
                 self.areas,
                 self.components,
                 self.teams,
+                self.types,
             )
             prefix = "cluster_area_"
             self.assertEqual(3, len(TestDigraph.subgraphs))
@@ -140,12 +142,15 @@ class GenerateTest(TestCase):
                 self.assertEqual(True, prefix + area in TestDigraph.subgraphs)
             self.assertEqual(3, len(TestDigraph.subgraphs["test"]))
             for area in ["A", "B", "Empty"]:
-                self.assertEqual(True, prefix + area in TestDigraph.subgraphs["test"])
+                self.assertEqual(
+                    True, prefix + area in TestDigraph.subgraphs["test"])
             self.assertEqual(2, len(TestDigraph.subgraphs[prefix + "A"]))
             for area in ["AS1", "AS2"]:
-                self.assertEqual(True, prefix + area in TestDigraph.subgraphs[prefix + "A"])
+                self.assertEqual(
+                    True, prefix + area in TestDigraph.subgraphs[prefix + "A"])
             self.assertEqual(1, len(TestDigraph.subgraphs[prefix + "AS1"]))
-            self.assertEqual(True, prefix + "AS1S1" in TestDigraph.subgraphs[prefix + "AS1"])
+            self.assertEqual(
+                True, prefix + "AS1S1" in TestDigraph.subgraphs[prefix + "AS1"])
             for component in self.components.values():
                 if component.dependency_identifiers is not None:
                     for dependency_identifier in component.dependency_identifiers:

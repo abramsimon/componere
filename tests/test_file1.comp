@@ -16,6 +16,13 @@ areas:
   all:
     name: All
     parent: partial
+types:
+  jar:
+    name: jar
+    description: jar
+teams:
+  team-2:
+    name: team-2
 components:
   dependency:
       name: Dependency
