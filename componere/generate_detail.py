@@ -17,22 +17,24 @@ import generate_component
 
 
 def build_detail_digraph(
-	name,
-	output_file,
-	areas,
-	components,
-	teams
+        name,
+        output_file,
+        areas,
+        components,
+        teams,
+        types
 ):
-	root = Digraph(name, filename=output_file, format="png")
-	generate_area.add_detail_area_components_digraph(
-		root,
-		areas,
-		components,
-		teams,
-	)
-	generate_component.add_components_edges_digraph(root, components)
-	generate_component.add_teams_color_map(
-		root,
-		generate_component.find_showed_teams(components, teams)
-	)
-	root.render(view=False, cleanup=True)
+    root = Digraph(name, filename=output_file, format="png")
+    generate_area.add_detail_area_components_digraph(
+        root,
+        areas,
+        components,
+        teams,
+        types,
+    )
+    generate_component.add_components_edges_digraph(root, components)
+    generate_component.add_teams_color_map(
+        root,
+        generate_component.find_showed_teams(components, teams)
+    )
+    root.render(view=False, cleanup=True)

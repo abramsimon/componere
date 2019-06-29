@@ -1,4 +1,4 @@
-Premise Componere
+Fork of Premise Componere
 =================
 Configuration and diagram generation of the architecture diagrams. There are a few diagrams that are generated.
 
@@ -13,7 +13,6 @@ Configuration and diagram generation of the architecture diagrams. There are a f
     * Shows every application component and above
     * Rolls up transitive dependencies for lower order dependencies
     * Groups by area
-
 
 Installing Componere
 --------------------

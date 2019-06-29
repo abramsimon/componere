@@ -1,3 +1,6 @@
+types:
+  apk:
+    name: apk
 areas:
   mother-of-areas:
     name: Mother of Areas

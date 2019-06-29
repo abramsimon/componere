@@ -1,3 +1,8 @@
+types:
+  Type-A:
+    name: typea
+  Type-B:
+    name: typeb
 areas:
     A:
         name: A
